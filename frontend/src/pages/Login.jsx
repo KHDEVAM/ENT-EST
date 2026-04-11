@@ -18,7 +18,7 @@ const Login = () => {
       await login(username, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.detail || 'Email ou mot de passe incorrect');
+      setError(err?.detail || 'Username ou mot de passe incorrect');
     } finally {
       setLoading(false);
     }

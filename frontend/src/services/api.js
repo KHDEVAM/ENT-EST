@@ -1,136 +1,67 @@
-// frontend/src/services/api.js
+// src/services/api.js
+import axios from "axios";
 
-import axios from 'axios';
+const API_URL = "http://127.0.0.1:8000";
 
-// L'adresse de notre backend (service Auth sur le port 8001)
-const API_URL = 'http://localhost:8001';
-
-// Création d'un client axios configuré
 const api = axios.create({
   baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
-// Intercepteur : ajoute automatiquement le token JWT à chaque requête
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-// ========== SERVICES D'AUTHENTIFICATION ==========
-
-// Connexion
-export const login = async (email, password) => {
+// ================= LOGIN =================
+export const login = async (username, password) => {
   try {
-    const response = await api.post('/login', { email, password });
-    
-    // Stocker le token et les infos utilisateur
-    localStorage.setItem('token', response.data.access_token);
-    localStorage.setItem('user', JSON.stringify({
-      id: response.data.user_id,
-      email: response.data.email,
-      name: response.data.full_name,
-      role: response.data.role
-    }));
-    
+    const formData = new URLSearchParams();
+    formData.append("username", username);
+    formData.append("password", password);
+
+    const response = await api.post("/login", formData, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+
+    localStorage.setItem("token", response.data.access_token);
+
     return response.data;
   } catch (error) {
-    throw error.response?.data || { detail: "Erreur de connexion au serveur" };
+    throw error.response?.data || { detail: "Erreur login" };
   }
 };
 
-// Inscription
+// ================= REGISTER =================
 export const register = async (userData) => {
   try {
-    const response = await api.post('/register', userData);
-    
-    localStorage.setItem('token', response.data.access_token);
-    localStorage.setItem('user', JSON.stringify({
-      id: response.data.user_id,
-      email: response.data.email,
-      name: response.data.full_name,
-      role: response.data.role
-    }));
-    
+    const response = await api.post("/register", userData);
     return response.data;
   } catch (error) {
-    throw error.response?.data || { detail: "Erreur d'inscription" };
+    throw error.response?.data || { detail: "Erreur register" };
   }
 };
 
-// Déconnexion
+// ================= PROTECTED =================
+export const getProtected = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await api.get("/protected", {
+      params: { token },
+    });
+
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { detail: "Erreur protected" };
+  }
+};
+
+// ================= UTILS =================
 export const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  window.location.href = '/login';
+  localStorage.removeItem("token");
 };
 
-// Récupérer l'utilisateur connecté
-export const getCurrentUser = () => {
-  const user = localStorage.getItem('user');
-  return user ? JSON.parse(user) : null;
-};
-
-// Vérifier si l'utilisateur est connecté
 export const isAuthenticated = () => {
-  return localStorage.getItem('token') !== null;
+  return localStorage.getItem("token") !== null;
 };
 
-// ========== SERVICES DES COURS (API du service-cours sur port 8002) ==========
-
-// Récupérer tous les cours
-export const getCourses = async () => {
-  try {
-    const response = await axios.get('http://localhost:8002/courses');
-    return response.data;
-  } catch (error) {
-    console.error('Erreur getCourses:', error);
-    return []; // Retourne un tableau vide en cas d'erreur
-  }
+export const getCurrentUser = () => {
+  return localStorage.getItem("token");
 };
-
-// Récupérer un cours spécifique par son ID
-export const getCourseById = async (courseId) => {
-  try {
-    const response = await axios.get(`http://localhost:8002/courses/${courseId}`);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || { detail: "Cours non trouvé" };
-  }
-};
-
-// ========== SERVICES IA (API du service-ia sur port 8004) ==========
-
-// Poser une question à l'IA
-export const askAI = async (question, courseContent = null, courseTitle = null) => {
-  try {
-    let url = 'http://localhost:8004/chat';
-    let body = { question };
-    
-    // Si on a du contexte (un cours spécifique), on utilise l'autre endpoint
-    if (courseContent) {
-      url = 'http://localhost:8004/chat-with-context';
-      body = {
-        question,
-        course_content: courseContent,
-        course_title: courseTitle
-      };
-    }
-    
-    const response = await axios.post(url, body);
-    return response.data;
-  } catch (error) {
-    console.error('Erreur askAI:', error);
-    return { 
-      success: false, 
-      response: "Désolé, le service IA n'est pas disponible pour le moment." 
-    };
-  }
-};
-
-export default api;
