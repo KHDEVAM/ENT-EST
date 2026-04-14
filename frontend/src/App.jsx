@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Register from "./pages/Register";
+import CourseList from './pages/CourseList';  
+
 import { isAuthenticated } from './services/api';
 
 // Composant pour protéger les routes (besoin d'être connecté)
@@ -19,6 +21,11 @@ function App() {
         <Route path="/dashboard" element={
           <PrivateRoute>
             <Dashboard />
+          </PrivateRoute>
+        } />
+        <Route path="/courses" element={   
+          <PrivateRoute>
+            <CourseList />
           </PrivateRoute>
         } />
         <Route path="/" element={<Navigate to="/dashboard" />} />

@@ -17,28 +17,29 @@ const Dashboard = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    logout();
+    logout();  // Cette fonction existe dans api.js
+    // La redirection se fait dans logout() avec window.location.href
   };
 
   if (!user) {
-    return <div>Chargement...</div>;
+    return <div style={styles.loading}>Chargement...</div>;
   }
 
   return (
     <div style={styles.container}>
       {/* Barre de navigation */}
       <nav style={styles.navbar}>
-        <div style={styles.logo}>ENT EST Salé</div>
+        <div style={styles.logo}>🎓 ENT EST Salé</div>
         <div style={styles.navLinks}>
-          <a href="/dashboard" style={styles.navLink}>Dashboard</a>
-          <a href="/courses" style={styles.navLink}>Mes cours</a>
-          <a href="/calendar" style={styles.navLink}>Emploi du temps</a>
-          <a href="/messages" style={styles.navLink}>Messages</a>
+          <button onClick={() => navigate('/dashboard')} style={styles.navButton}>Dashboard</button>
+          <button onClick={() => navigate('/courses')} style={styles.navButton}>Mes cours</button>
+          <button onClick={() => navigate('/calendar')} style={styles.navButton}>Emploi du temps</button>
+          <button onClick={() => navigate('/messages')} style={styles.navButton}>Messages</button>
         </div>
         <div style={styles.userMenu}>
-          <span> {user.name}</span>
+          <span style={styles.userName}>👋 {user?.full_name || user?.username || user?.email}</span>
           <button onClick={handleLogout} style={styles.logoutBtn}>
-            Déconnexion
+            🔓 Déconnexion
           </button>
         </div>
       </nav>
@@ -46,42 +47,45 @@ const Dashboard = () => {
       {/* Contenu principal */}
       <main style={styles.main}>
         <div style={styles.welcomeCard}>
-          <h1>Bienvenue, {user.name} !</h1>
-          <p>Rôle : {user.role === 'etudiant' ? '👨‍🎓 Étudiant' : user.role === 'professeur' ? '👨‍🏫 Professeur' : '👑 Administrateur'}</p>
+          <h1>Bienvenue, {user?.full_name || user?.username || 'Étudiant'} !</h1>
+          <p>Rôle : 👨‍🎓 Étudiant</p>
         </div>
 
         <div style={styles.statsGrid}>
           <div style={styles.statCard}>
-            <h3>12</h3>
+            <h3>📚 12</h3>
             <p>Cours disponibles</p>
           </div>
           <div style={styles.statCard}>
-            <h3>3</h3>
+            <h3>📝 3</h3>
             <p>Devoirs à rendre</p>
           </div>
           <div style={styles.statCard}>
-            <h3>5</h3>
+            <h3>💬 5</h3>
             <p>Messages non lus</p>
           </div>
           <div style={styles.statCard}>
-            <h3>85%</h3>
+            <h3>🎯 85%</h3>
             <p>Progression</p>
           </div>
         </div>
 
         <div style={styles.recentCourses}>
-          <h2>Cours récents</h2>
+          <h2>📖 Cours récents</h2>
           <div style={styles.courseList}>
-            {/* Ici on affichera les cours depuis l'API */}
             <div style={styles.courseCard}>
               <h4>Architecture Microservices</h4>
               <p>Prof. M. Alaoui</p>
-              <button style={styles.viewBtn}>Voir le cours →</button>
+              <button onClick={() => navigate('/course/1')} style={styles.viewBtn}>
+                Voir le cours →
+              </button>
             </div>
             <div style={styles.courseCard}>
               <h4>Docker & Kubernetes</h4>
               <p>Prof. Mme Benali</p>
-              <button style={styles.viewBtn}>Voir le cours →</button>
+              <button onClick={() => navigate('/course/2')} style={styles.viewBtn}>
+                Voir le cours →
+              </button>
             </div>
           </div>
         </div>
@@ -89,6 +93,8 @@ const Dashboard = () => {
     </div>
   );
 };
+
+// ========== STYLES ==========
 
 const styles = {
   container: {
@@ -102,6 +108,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
   logo: {
     fontSize: '20px',
@@ -109,24 +116,36 @@ const styles = {
   },
   navLinks: {
     display: 'flex',
-    gap: '20px',
+    gap: '15px',
   },
-  navLink: {
+  navButton: {
+    background: 'none',
+    border: 'none',
     color: 'white',
-    textDecoration: 'none',
+    fontSize: '14px',
+    cursor: 'pointer',
+    padding: '8px 12px',
+    borderRadius: '5px',
+    transition: 'background-color 0.3s',
   },
   userMenu: {
     display: 'flex',
     alignItems: 'center',
     gap: '15px',
   },
+  userName: {
+    fontSize: '14px',
+  },
   logoutBtn: {
     backgroundColor: '#e74c3c',
     color: 'white',
     border: 'none',
-    padding: '5px 15px',
+    padding: '8px 16px',
     borderRadius: '5px',
     cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    transition: 'background-color 0.3s',
   },
   main: {
     padding: '30px',
@@ -166,9 +185,10 @@ const styles = {
     marginTop: '20px',
   },
   courseCard: {
-    border: '1px solid #ddd',
+    border: '1px solid #e0e0e0',
     padding: '15px',
     borderRadius: '8px',
+    transition: 'transform 0.2s, box-shadow 0.2s',
   },
   viewBtn: {
     backgroundColor: '#3498db',
@@ -178,7 +198,37 @@ const styles = {
     borderRadius: '5px',
     cursor: 'pointer',
     marginTop: '10px',
+    transition: 'background-color 0.3s',
+  },
+  loading: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    fontSize: '18px',
   },
 };
+
+// Ajout des effets hover
+const styleSheet = document.createElement("style");
+styleSheet.textContent = `
+  button:hover {
+    opacity: 0.85;
+  }
+  .nav-button:hover {
+    background-color: #34495e !important;
+  }
+  .logout-btn:hover {
+    background-color: #c0392b !important;
+  }
+  .view-btn:hover {
+    background-color: #2980b9 !important;
+  }
+  .course-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+`;
+document.head.appendChild(styleSheet);
 
 export default Dashboard;
