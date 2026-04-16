@@ -1,2 +1,4 @@
 # simulation DB (plus tard Cassandra)
-fake_users_db = {}
+fake_users_db = {
+  
+}
