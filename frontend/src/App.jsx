@@ -4,8 +4,10 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Register from "./pages/Register";
 import CourseList from './pages/CourseList';  
+import CalendarPage from './pages/Calendar';
 
 import { isAuthenticated } from './services/api';
+import AdminSchedule from './pages/AdminCalendar';
 
 // Composant pour protéger les routes (besoin d'être connecté)
 const PrivateRoute = ({ children }) => {
@@ -28,6 +30,12 @@ function App() {
             <CourseList />
           </PrivateRoute>
         } />
+        <Route path="/calendar" element={   
+          <PrivateRoute>
+            <CalendarPage />
+          </PrivateRoute>
+        } />
+        <Route path="/admin/calendar" element={<AdminSchedule />} />
         <Route path="/" element={<Navigate to="/dashboard" />} />
       </Routes>
     </Router>

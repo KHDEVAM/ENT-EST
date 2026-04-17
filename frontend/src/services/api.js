@@ -102,3 +102,23 @@ export const getCourses = async () => {
     throw error.response?.data || { detail: "Erreur chargement cours" };
   }
 };
+
+// ================= SCHEDULE =================
+
+// GET all schedules
+export const getSchedule = async () => {
+  const res = await fetch(`${API_URL}/api/schedule/`);
+  return res.json();
+};
+
+export const createSchedule = async (data) => {
+  const res = await fetch(`${API_URL}/api/schedule/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+};
