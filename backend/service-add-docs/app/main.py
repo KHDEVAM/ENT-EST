@@ -3,8 +3,6 @@ import io
 import asyncio
 from datetime import datetime
 from functools import partial
-
-# Import pyasyncore FIRST to patch Python 3.13 before Cassandra loads
 import asyncore 
 
 from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException
