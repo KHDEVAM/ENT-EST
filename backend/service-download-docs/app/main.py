@@ -5,7 +5,7 @@ from .security import get_current_user
 
 app = FastAPI()
 
-cluster = Cluster(['127.0.0.1'])
+cluster = Cluster(['cassandra'])
 session = cluster.connect('ent_space')
 session.row_factory = dict_factory 
 

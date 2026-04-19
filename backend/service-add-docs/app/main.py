@@ -24,7 +24,7 @@ minio_client = Minio(
 )
 
 # --- Cassandra Setup ---
-cluster = Cluster(['127.0.0.1'])
+cluster = Cluster(['cassandra'])
 cluster.connection_class = AsyncioConnection # Using Asyncio instead of Gevent
 cassandra_session = cluster.connect('ent_space')
 
