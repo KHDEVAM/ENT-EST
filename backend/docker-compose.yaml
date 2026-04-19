@@ -56,17 +56,9 @@ services:
     command: server /data --console-address ":9001"
     networks:
       - ent_network
-
-networks:
-  ent_network:
-    driver: bridge
-
-volumes:
-  cassandra_data:
-  minio_data:
-
-get-docs-service:
-    build: ./service-get-docs
+    
+  service-download-docs:
+    build: ./service-download-docs
     container_name: get_docs_ent
     ports:
       - "8002:8002"
@@ -78,3 +70,12 @@ get-docs-service:
     networks:
       - ent_network
     restart: always
+
+networks:
+  ent_network:
+    driver: bridge
+
+volumes:
+  cassandra_data:
+  minio_data:
+
