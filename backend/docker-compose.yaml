@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # --- Authentication Service (Port 8000) ---
   auth-service:
-    build: ./auth-service
+    build: ./service-auth
     container_name: auth_ent
     ports:
       - "8000:8000"
