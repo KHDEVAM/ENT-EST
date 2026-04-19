@@ -2,3 +2,4 @@ fastapi
 uvicorn
 python-jose[cryptography]
 cassandra-driver
+python-multipart
