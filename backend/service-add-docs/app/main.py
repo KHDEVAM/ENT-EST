@@ -11,7 +11,7 @@ from cassandra.io.asyncioreactor import AsyncioConnection
 from minio import Minio
 from minio.error import S3Error
 
-from .auth import get_current_user
+from .security import get_current_user
 
 app = FastAPI()
 
