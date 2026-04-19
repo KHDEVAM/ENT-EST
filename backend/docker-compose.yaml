@@ -64,3 +64,17 @@ networks:
 volumes:
   cassandra_data:
   minio_data:
+
+get-docs-service:
+    build: ./service-get-docs
+    container_name: get_docs_ent
+    ports:
+      - "8002:8002"
+    environment:
+      - CASSANDRA_HOST=cassandra
+    depends_on:
+      - cassandra
+      - auth-service
+    networks:
+      - ent_network
+    restart: always
